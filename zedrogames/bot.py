@@ -11,9 +11,10 @@ class ZEDROGAMES(commands.Bot):
     def __init__(self, *args, **kvargs):
         super().__init__(*args, **kvargs)
         self.paas_guild = None
-        # These two commands are always there and can not be removed
+        # These three commands are always there and can not be removed
         self.add_command(add_extension_command)
         self.add_command(remove_extension_command)
+        self.add_command(list_extensions_command)
 
     async def on_ready(self):
         # Set the activity
@@ -39,10 +40,8 @@ class ZEDROGAMES(commands.Bot):
         # The bot doesn't react to its own messages or system messages
         if not msgutils.can_respond(message):
             return
-
-        # If a command exists in the given message, process it and do nothing else
-        if message.content.startswith('!'):
-            await self.process_commands(message)
+        # Process commands
+        await self.process_commands(message)
 
     async def on_command_error(self, context, exception):
         if isinstance(exception, commands.CommandNotFound):
@@ -112,25 +111,20 @@ class ZEDROGAMES(commands.Bot):
 @commands.is_owner()
 async def add_extension_command(ctx, ext_name):
     """Loads the given extension."""
-    if ctx.channel.type == discord.ChannelType.private:
-        context = ctx
-    else:
-        await ctx.bot.delete_message(ctx.message)
-        await ctx.author.create_dm()
-        context = ctx.author.dm_channel
+    await ctx.bot.delete_message(ctx.message)
     if ext_name in ctx.bot.extensions:
-        await context.send("That extension is already loaded.")
+        await ctx.author.send("That extension is already loaded.")
         return
     try:
         ctx.bot.load_extension(ext_name)
     except commands.ExtensionNotFound:
-        await context.send("That extension does not exist.")
+        await ctx.author.send("That extension does not exist.")
     except commands.NoEntryPointError:
-        await context.send("That extension does not have a setup() function.")
+        await ctx.author.send("That extension does not have a setup() function.")
     except commands.ExtensionFailed as e:
-        await context.send(f"An exception was raised: {e.original}")
+        await ctx.author.send(f"An exception was raised: {e.original}")
     else:
-        await context.send("The extension was loaded.")
+        await ctx.author.send("The extension was loaded.")
         print(f"Loaded extension {ext_name}")
 
 
@@ -138,41 +132,35 @@ async def add_extension_command(ctx, ext_name):
 @commands.is_owner()
 async def remove_extension_command(ctx, ext_name):
     """Unloads the given extension."""
-    if ctx.channel.type == discord.ChannelType.private:
-        context = ctx
-    else:
-        await ctx.bot.delete_message(ctx.message)
-        await ctx.author.create_dm()
-        context = ctx.author.dm_channel
+    await ctx.bot.delete_message(ctx.message)
     if ext_name not in ctx.bot.extensions:
-        await context.send("That extension is not loaded.")
+        await ctx.author.send("That extension is not loaded.")
         return
     ctx.bot.unload_extension(ext_name)
-    await context.send("The extension was unloaded.")
+    await ctx.author.send("The extension was unloaded.")
     print(f"Unloaded extension {ext_name}")
+
+
+@commands.command(name="listext")
+@commands.is_owner()
+async def list_extensions_command(ctx):
+    """Sends a DM containing a list of all active extensions."""
+    await ctx.bot.delete_message(ctx.message)
+    await ctx.author.send("Here's all currently active extensions: ```\n{}```"
+                          .format("\n".join(ctx.bot.extensions.keys())))
 
 
 @add_extension_command.error
 async def add_ext_error(ctx, error):
-    if ctx.channel.type == discord.ChannelType.private:
-        context = ctx
-    else:
-        await ctx.author.create_dm()
-        context = ctx.author.dm_channel
     if isinstance(error, commands.MissingRequiredArgument):
-        await context.send("An extension name must be given. !addext [EXTENSION NAME]")
+        await ctx.author.send("An extension name must be given. !addext [EXTENSION NAME]")
     else:
         await ctx.bot.generate_error(ctx, error)
 
 
 @remove_extension_command.error
 async def remove_ext_error(ctx, error):
-    if ctx.channel.type == discord.ChannelType.private:
-        context = ctx
-    else:
-        await ctx.author.create_dm()
-        context = ctx.author.dm_channel
     if isinstance(error, commands.MissingRequiredArgument):
-        await context.send("An extension name must be given. !rmext [EXTENSION NAME]")
+        await ctx.author.send("An extension name must be given. !rmext [EXTENSION NAME]")
     else:
         await ctx.bot.generate_error(ctx, error)
