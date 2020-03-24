@@ -16,7 +16,8 @@ for the extensions related to Pokémon as a Service.
 
 ## Structure & Features
 The bot's functionality is divided into many separate extensions that can be enabled or disabled at will with the
-`!addext` and `!rmext` commands. All extensions are activated by default when the bot logs in to Discord.
+`!addext` and `!rmext` commands. All extensions are activated by default when the bot logs in to Discord. The
+`!listext` command allows you to see all active extensions.
 
 Upon issuing a command, the bot will automatically attempt to delete it. The `manage_messages` permission is required
 for this. An error will be printed out if the permission is missing, but the bot will otherwise ignore it.
