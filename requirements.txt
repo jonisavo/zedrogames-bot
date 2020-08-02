@@ -1,2 +1,2 @@
 wheel
-discord.py
+discord.py >= 1.3.4
