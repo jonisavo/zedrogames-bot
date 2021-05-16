@@ -43,7 +43,8 @@ class Microtransactions(commands.Cog):
     async def lock_account(self, member):
         """Locks the given account."""
         # Stop if adding the locked role failed
-        if await self.add_locked_role(member, "Microtransaction time!") is False:
+        if await self.add_locked_role(member,
+                                      "Microtransaction time!") is False:
             return
         # Send a dm and wait for a reaction
         await member.send(f"""\
@@ -61,7 +62,8 @@ We hope you feel a strong sense of pride and accomplishment.
         await self.bot.wait_for('reaction_add', check=reaction_check)
         await self.remove_locked_role(member, "The microtransaction was paid.")
         await self.bot.write_message(
-            member.dm_channel, f"Thank you for your purchase, {member.name}! You may now continue existing."
+            member.dm_channel,
+            f"Thank you for your purchase, {member.name}! You may now continue existing."
         )
 
     async def add_locked_role(self, member, specified_reason=None):
@@ -70,13 +72,17 @@ We hope you feel a strong sense of pride and accomplishment.
         print(f"Giving locked role to {member.guild.name}>{member}")
         # Return if the locked role doesn't exist or the author already has it
         if locked_role is None or locked_role in member.roles:
-            print(" > Failed: locked role does not exist or author already has it")
+            print(
+                " > Failed: locked role does not exist or author already has it"
+            )
             return False
         # Attempt to give the author the locked role
         try:
             await member.add_roles(locked_role, reason=specified_reason)
         except discord.Forbidden:
-            print(" > Failed: Forbidden. Is the manage_roles permission missing?")
+            print(
+                " > Failed: Forbidden. Is the manage_roles permission missing?"
+            )
             return False
         except discord.HTTPException as e:
             print(f" > Failed - status code {e.status}: {e.text}")
@@ -90,13 +96,17 @@ We hope you feel a strong sense of pride and accomplishment.
         print(f"Removing locked role from {member.guild.name}>{member}")
         # Return if the locked role doesn't exist or the author doesn't have it
         if locked_role is None or locked_role not in member.roles:
-            print(" > Failed: locked role does not exist or author does not have it")
+            print(
+                " > Failed: locked role does not exist or author does not have it"
+            )
             return False
         # Attempt to remove the locked role
         try:
             await member.remove_roles(locked_role, reason=specified_reason)
         except discord.Forbidden:
-            print(" > Failed: Forbidden. Is the manage_roles permission missing?")
+            print(
+                " > Failed: Forbidden. Is the manage_roles permission missing?"
+            )
             return False
         except discord.HTTPException as e:
             print(f" > Failed - status code {e.status}: {e.text}")
@@ -111,11 +121,13 @@ We hope you feel a strong sense of pride and accomplishment.
             if locked_role is not None and locked_role in member.roles:
                 print(f"Removing locked role at: {member.guild.name}>{member}")
                 try:
-                    await member.remove_roles(locked_role, reason="Removing multiple locked roles.")
+                    await member.remove_roles(
+                        locked_role, reason="Removing multiple locked roles.")
                 except discord.Forbidden:
                     print(" > Forbidden: is manage_roles permission missing?")
                 except discord.HTTPException as e:
-                    print(f" > HTTPException - Status Code {e.status}: {e.text}")
+                    print(
+                        f" > HTTPException - Status Code {e.status}: {e.text}")
 
 
 def setup(bot):

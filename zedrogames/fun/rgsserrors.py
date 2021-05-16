@@ -60,10 +60,7 @@ sections = {
 
 class RGSSError:
     def __init__(self):
-        self.error_type = random.choice([
-            "NoMethodError",
-            "SyntaxError"
-        ])
+        self.error_type = random.choice(["NoMethodError", "SyntaxError"])
         self.section = ""
         self.line = 1
         self.text = None
@@ -78,35 +75,26 @@ class RGSSError:
         """Generates the text for a NoMethodError."""
         self.section, self.line = self.generate_location()
         method = random.choice([
-            "name",
-            "level",
-            "length",
-            "update",
-            "push",
-            "bitmap",
-            "dispose",
+            "name", "level", "length", "update", "push", "bitmap", "dispose",
             "clear"
-            "each",
-            "keys"
+            "each", "keys"
         ])
         classname = random.choice([
-            "nil:NilClass",
-            f"{random.randint(0,100)}:Fixnum",
-            "true:TrueClass",
-            "false:FalseClass"
+            "nil:NilClass", f"{random.randint(0,100)}:Fixnum",
+            "true:TrueClass", "false:FalseClass"
         ])
         self.text = f"undefined method '{method}' for {classname}"
 
     def generate_syntaxerror(self):
         """Generates the text for a SyntaxError."""
         self.section, self.line = self.generate_location()
-        if random.randint(0,3) == 0:
+        if random.randint(0, 3) == 0:
             self.line = sections.get(self.section).get("length")
 
     def generate_location(self):
         """Generates a random location for the RGSS error."""
         section = random.choice(list(sections.keys()))
-        line = random.randint(1, sections.get(section).get("length")+1)
+        line = random.randint(1, sections.get(section).get("length") + 1)
         return section, line
 
     def get(self):
@@ -115,17 +103,13 @@ class RGSSError:
         if self.text:
             text += f"\n\n{self.text}"
         text += "\n\n" + random.choice([
-            "Any help? -Zed",
-            "help please -garis",
-            "Uhh... what does this mean? -Zedrovas",
-            "Can someone help? -Zed",
+            "Any help? -Zed", "help please -garis",
+            "Uhh... what does this mean? -Zedrovas", "Can someone help? -Zed",
             "wtf why is this not working -garis",
             "any help.... ? i fucking hate rpg maker -garis",
             "Does anyone here know Ruby? -Zedrovas",
             "GOD WHO THE FUCK DESIGNED THIS GOD FORSAKEN EGNINE -g",
-            "i hate my life",
-            "Help needed! -Zedrovas",
-            "uh"
+            "i hate my life", "Help needed! -Zedrovas", "uh"
         ])
         return text
 

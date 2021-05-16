@@ -17,10 +17,12 @@ class Responses(commands.Cog):
         # Small chance to respond to messages
         if message.channel.type == ChannelType.private:
             if random.randint(0, 60) == 0:
-                await self.bot.write_message(message.channel, random.choice(quotes.annoyed_quotes))
+                await self.bot.write_message(
+                    message.channel, random.choice(quotes.annoyed_quotes))
         else:
             if random.randint(0, 90) == 0:
-                await self.bot.write_message(message.channel, random.choice(quotes.normal_quotes))
+                await self.bot.write_message(
+                    message.channel, random.choice(quotes.normal_quotes))
 
     @commands.command(name='quote')
     @commands.is_owner()

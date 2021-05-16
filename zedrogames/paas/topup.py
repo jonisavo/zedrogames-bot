@@ -15,7 +15,9 @@ class PAAS_Topup(commands.Cog):
         await self.bot.delete_message(ctx.message)
         # Send the user a top-up code
         code = await self.generate_code(ctx.author.id)
-        await ctx.author.send(f"Greetings, {ctx.author.name}. Here's your unique top-up code:\n `` {code} ``")
+        await ctx.author.send(
+            f"Greetings, {ctx.author.name}. Here's your unique top-up code:\n `` {code} ``"
+        )
 
     async def generate_code(self, givenseed):
         if givenseed is not None:
