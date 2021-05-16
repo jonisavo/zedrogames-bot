@@ -18,7 +18,8 @@ class ZEDROGAMES(commands.Bot):
 
     async def on_ready(self):
         # Set the activity
-        await self.change_presence(status=discord.Status.online, activity=discord.Game("PokéMMOn 0.3.2"))
+        await self.change_presence(status=discord.Status.online,
+                                   activity=discord.Game("PokéMMOn 0.3.2"))
         # List all guilds the bot is connected into
         if len(self.guilds) == 0:
             print(
@@ -60,7 +61,11 @@ class ZEDROGAMES(commands.Bot):
                 msglength = len(message)
             else:
                 msglength = len(message.content)
-            await asyncio.sleep(max(min(msglength / 6 + random.randint(0, 4) - random.randint(0, 4), 20), 3))
+            await asyncio.sleep(
+                max(
+                    min(
+                        msglength / 6 + random.randint(0, 4) -
+                        random.randint(0, 4), 20), 3))
             await destination.send(message)
 
     async def delete_message(self, message):
@@ -72,16 +77,19 @@ class ZEDROGAMES(commands.Bot):
         try:
             await message.delete()
         except discord.Forbidden:
-            print(f"Deleting message {message.id} at {message.guild}>#{message.channel} failed: Forbidden. "
-                  "Is the manage_messages permission missing?")
+            print(
+                f"Deleting message {message.id} at {message.guild}>#{message.channel} failed: Forbidden. "
+                "Is the manage_messages permission missing?")
             return False
         except discord.NotFound:
-            print(f"Deleting message {message.id} at {message.guild}>#{message.channel} failed: Not Found. "
-                  "Has the message been deleted already?")
+            print(
+                f"Deleting message {message.id} at {message.guild}>#{message.channel} failed: Not Found. "
+                "Has the message been deleted already?")
             return False
         except discord.HTTPException as e:
-            print(f"Deleting message {message.id} at {message.guild}>#{message.channel} failed with code {e.status}: "
-                  f"{e.text}")
+            print(
+                f"Deleting message {message.id} at {message.guild}>#{message.channel} failed with code {e.status}: "
+                f"{e.text}")
             return False
         else:
             return True
@@ -120,7 +128,8 @@ async def add_extension_command(ctx, ext_name):
     except commands.ExtensionNotFound:
         await ctx.author.send("That extension does not exist.")
     except commands.NoEntryPointError:
-        await ctx.author.send("That extension does not have a setup() function.")
+        await ctx.author.send(
+            "That extension does not have a setup() function.")
     except commands.ExtensionFailed as e:
         await ctx.author.send(f"An exception was raised: {e.original}")
     else:
@@ -146,14 +155,16 @@ async def remove_extension_command(ctx, ext_name):
 async def list_extensions_command(ctx):
     """Sends a DM containing a list of all active extensions."""
     await ctx.bot.delete_message(ctx.message)
-    await ctx.author.send("Here's all currently active extensions: ```\n{}```"
-                          .format("\n".join(ctx.bot.extensions.keys())))
+    await ctx.author.send(
+        "Here's all currently active extensions: ```\n{}```".format("\n".join(
+            ctx.bot.extensions.keys())))
 
 
 @add_extension_command.error
 async def add_ext_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.author.send("An extension name must be given. !addext [EXTENSION NAME]")
+        await ctx.author.send(
+            "An extension name must be given. !addext [EXTENSION NAME]")
     else:
         await ctx.bot.generate_error(ctx, error)
 
@@ -161,6 +172,7 @@ async def add_ext_error(ctx, error):
 @remove_extension_command.error
 async def remove_ext_error(ctx, error):
     if isinstance(error, commands.MissingRequiredArgument):
-        await ctx.author.send("An extension name must be given. !rmext [EXTENSION NAME]")
+        await ctx.author.send(
+            "An extension name must be given. !rmext [EXTENSION NAME]")
     else:
         await ctx.bot.generate_error(ctx, error)

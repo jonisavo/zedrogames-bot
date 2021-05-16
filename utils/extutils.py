@@ -5,7 +5,8 @@ from discord.ext import commands
 def load_all_extensions(bot, path="./zedrogames"):
     for currentpath, folders, files in os.walk(path):
         for file in files:
-            if file.startswith("__") or file.endswith(".pyc") or currentpath == path:
+            if file.startswith("__") or file.endswith(
+                    ".pyc") or currentpath == path:
                 continue
             # I'm still learning Python so this may be tough to look at, sorry folks.
             # This code transforms the cog file paths (e.g. ./zedrogames\core\base.py)
@@ -18,7 +19,9 @@ def load_all_extensions(bot, path="./zedrogames"):
                 except commands.ExtensionNotFound:
                     print(" > Failure: extension was not found")
                 except commands.NoEntryPointError:
-                    print(" > Failure: extension does not have a setup() function")
+                    print(
+                        " > Failure: extension does not have a setup() function"
+                    )
                 except commands.ExtensionFailed as e:
                     print(f" > Failure: an exception was raised: {e.original}")
 
@@ -27,7 +30,8 @@ def load_all_extensions(bot, path="./zedrogames"):
 def find_extension(name, path="./zedrogames"):
     for currentpath, folders, files in os.walk(path):
         for file in files:
-            if file.startswith("__") or file.endswith(".pyc") or currentpath == path:
+            if file.startswith("__") or file.endswith(
+                    ".pyc") or currentpath == path:
                 continue
             ext_path = os.path.join(currentpath, file.replace(".py", ""))\
                 .replace("\\", "/")\

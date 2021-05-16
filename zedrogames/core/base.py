@@ -16,7 +16,9 @@ class BaseCommands(commands.Cog):
         await self.bot.delete_message(ctx.message)
         # Send a nice message
         todd_file = discord.File("assets/todd.png", filename="TODD.png")
-        await ctx.author.send("In the triple-A games industry, no one can hear you scream", file=todd_file)
+        await ctx.author.send(
+            "In the triple-A games industry, no one can hear you scream",
+            file=todd_file)
 
     @commands.command(name='message')
     @commands.guild_only()
@@ -29,14 +31,14 @@ class BaseCommands(commands.Cog):
         channels = await guildutils.get_text_channels(ctx.guild)
         # If there are no text channels to send messages into, return
         if len(channels) == 0:
-            ctx.author.send(
-                ("Hey there. You tried to send a message, but there aren't any "
-                 f"text channels in {ctx.guild.name} to send it into.")
-            )
+            ctx.author.send((
+                "Hey there. You tried to send a message, but there aren't any "
+                f"text channels in {ctx.guild.name} to send it into."))
             return
         # Otherwise let the user choose which channel their message should be sent to
-        dm_text = (f"Beep. Boop. You're about to send a message to {ctx.guild.name}. "
-                   "Select which channel you wish to send the message into.")
+        dm_text = (
+            f"Beep. Boop. You're about to send a message to {ctx.guild.name}. "
+            "Select which channel you wish to send the message into.")
         for channel in channels:
             dm_text += f"\n{channels.index(channel)}: #{channel.name}"
         await ctx.author.send(dm_text)
@@ -45,12 +47,18 @@ class BaseCommands(commands.Cog):
         if selected_index is None:
             return
         selected_channel = channels[selected_index]
-        await ctx.author.send(f"You chose #{selected_channel.name} as the output channel.")
-        await ctx.author.send(f"Write any message, and it will be sent to #{selected_channel.name}. You have 5 minutes.")
+        await ctx.author.send(
+            f"You chose #{selected_channel.name} as the output channel.")
+        await ctx.author.send(
+            f"Write any message, and it will be sent to #{selected_channel.name}. You have 5 minutes."
+        )
         # Write a message for the bot to send
         try:
-            message = await self.bot.wait_for('message', timeout=300.0, check=lambda msg:
-            msg.author == ctx.author and isinstance(msg.channel, discord.DMChannel))
+            message = await self.bot.wait_for(
+                'message',
+                timeout=300.0,
+                check=lambda msg: msg.author == ctx.author and isinstance(
+                    msg.channel, discord.DMChannel))
         except asyncio.TimeoutError:
             await ctx.author.send("The query timed out.")
             return
@@ -72,11 +80,15 @@ class BaseCommands(commands.Cog):
             return
         # Ask for confirmation
         await ctx.author.send(content=message.content, tts=message.tts)
-        await ctx.author.send(f"Send this message to #{selected_channel.name}? Y/N")
+        await ctx.author.send(
+            f"Send this message to #{selected_channel.name}? Y/N")
         try:
-            confirmation = await self.bot.wait_for('message', timeout=30.0, check=lambda msg:
-                                    msg.author == ctx.author and isinstance(msg.channel, discord.DMChannel) and
-                                    (msg.content.lower().startswith("y") or msg.content.lower().startswith("n")))
+            confirmation = await self.bot.wait_for(
+                'message',
+                timeout=30.0,
+                check=lambda msg: msg.author == ctx.author and isinstance(
+                    msg.channel, discord.DMChannel) and (msg.content.lower(
+                    ).startswith("y") or msg.content.lower().startswith("n")))
         except asyncio.TimeoutError:
             await ctx.author.send("The query timed out.")
             return
@@ -86,14 +98,21 @@ class BaseCommands(commands.Cog):
             return
         # Attempt to send the message to the chosen channel
         try:
-            await selected_channel.send(content=message.content, tts=message.tts)
+            await selected_channel.send(content=message.content,
+                                        tts=message.tts)
         except discord.Forbidden:
-            await ctx.author.send("I could not send the message (403: Forbidden). Do I have the necessary permissions?")
+            await ctx.author.send(
+                "I could not send the message (403: Forbidden). Do I have the necessary permissions?"
+            )
         except discord.HTTPException as e:
-            await ctx.author.send(f"I could not send the message (error code {e.status}: {e.text})")
+            await ctx.author.send(
+                f"I could not send the message (error code {e.status}: {e.text})"
+            )
         else:
             await ctx.author.send("The message was sent.")
-            print(f"A message was sent to {ctx.guild.name}>#{selected_channel.name} by {ctx.author}")
+            print(
+                f"A message was sent to {ctx.guild.name}>#{selected_channel.name} by {ctx.author}"
+            )
 
 
 def setup(bot):
